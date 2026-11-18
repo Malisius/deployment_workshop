@@ -1,0 +1,22 @@
+# ==============================================================================
+# Cloudflare Tunnel Configuration (cloudflared)
+# Exposes internal services to the public internet securely without port forwarding
+# ==============================================================================
+
+# Tunnel UUID (Obtained by running: cloudflared tunnel create <tunnel-name>)
+tunnel: YOUR_TUNNEL_UUID_HERE
+
+# Path to the credentials file generated during tunnel creation
+credentials-file: /root/.cloudflared/YOUR_TUNNEL_UUID_HERE.json
+
+# Ingress Rules
+ingress:
+  # 1. Map your public domain or subdomain to the local Flask application
+  - hostname: workshop.yourdomain.com
+    service: http://localhost:5000
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: false
+
+  # 2. Catch-all rule returning 404 for unmapped hostnames (Mandatory)
+  - service: http_status:404

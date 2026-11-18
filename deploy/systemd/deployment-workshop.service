@@ -1,0 +1,34 @@
+[Unit]
+Description=Deployment Workshop Flask Web Application
+After=network.target mysql.service mariadb.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/deployment_workshop
+Environment="PATH=/opt/deployment_workshop/venv/bin:/usr/local/bin:/usr/bin"
+EnvironmentFile=-/opt/deployment_workshop/.env
+ExecStart=/opt/deployment_workshop/venv/bin/gunicorn \
+    --workers 3 \
+    --threads 2 \
+    --timeout 60 \
+    --bind 127.0.0.1:5000 \
+    --access-logfile - \
+    --error-logfile - \
+    wsgi:app
+
+Restart=always
+RestartSec=5
+KillMode=mixed
+TimeoutStopSec=15
+
+# Security Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

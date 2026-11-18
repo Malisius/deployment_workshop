@@ -1,0 +1,54 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deployment_workshop_web
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=workshop_user
+      - MYSQL_PASSWORD=workshop_secret_pass
+      - MYSQL_DATABASE=deployment_workshop
+      - SECRET_KEY=docker-compose-local-secret-key-12345
+      - APP_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - workshop_net
+
+  db:
+    image: mysql:8.0
+    container_name: deployment_workshop_db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: workshop_root_pass
+      MYSQL_DATABASE: deployment_workshop
+      MYSQL_USER: workshop_user
+      MYSQL_PASSWORD: workshop_secret_pass
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pworkshop_root_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - workshop_net
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  workshop_net:
+    driver: bridge

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: deployment-workshop
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn wsgi:app
+    healthCheckPath: /healthz?graceful=true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.10
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: workshop-mysql
+          property: connectionString
+
+databases:
+  - name: workshop-mysql
+    plan: starter
+    databaseName: deployment_workshop
+    user: workshop_user

@@ -1,0 +1,32 @@
+{
+  "name": "deployment-workshop",
+  "description": "Demonstration Flask + MySQL web application deployable anywhere with zero code changes.",
+  "repository": "https://github.com/example/deployment_workshop",
+  "keywords": ["python", "flask", "mysql", "docker", "heroku", "railway", "render", "self-hosted"],
+  "env": {
+    "SECRET_KEY": {
+      "description": "Secret key for sessions and CSRF protection.",
+      "generator": "secret"
+    },
+    "APP_ENV": {
+      "description": "Environment mode (production or development).",
+      "value": "production"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  },
+  "addons": [
+    {
+      "plan": "jawsdb:kite-fin"
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}

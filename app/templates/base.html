@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Deployment Workshop - Multi-Service Flask & MySQL Demo{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-slate-100">
+    <!-- Navigation Bar -->
+    <header class="border-b border-slate-800 bg-slate-950/70 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                    </svg>
+                </div>
+                <div>
+                    <a href="{{ url_for('main.index') }}" class="font-bold text-lg text-white hover:text-indigo-300 transition">Deployment Workshop</a>
+                    <span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 ml-2">Flask + MySQL</span>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-4 text-sm font-medium">
+                <a href="{{ url_for('main.health_check') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>/healthz</span>
+                </a>
+                <a href="{{ url_for('main.list_items_api') }}" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition">
+                    /api/items
+                </a>
+                <a href="{{ url_for('main.info_api') }}" target="_blank" class="hidden md:inline-flex px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition">
+                    /api/info
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% set bg_color = 'bg-blue-900/50 border-blue-700 text-blue-200' %}
+                    {% if category == 'success' %}
+                        {% set bg_color = 'bg-emerald-900/50 border-emerald-700 text-emerald-200' %}
+                    {% elif category == 'danger' %}
+                        {% set bg_color = 'bg-rose-900/50 border-rose-700 text-rose-200' %}
+                    {% elif category == 'warning' %}
+                        {% set bg_color = 'bg-amber-900/50 border-amber-700 text-amber-200' %}
+                    {% endif %}
+                    <div class="p-4 mb-3 rounded-xl border {{ bg_color }} backdrop-blur flex items-center justify-between shadow-lg">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-sm font-medium">{{ message }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-slate-950/80 py-6 mt-12 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="font-semibold text-slate-300">Deployment Workshop</span>
+                <span>•</span>
+                <span>Demonstrating Universal Cloud & Self-Hosted Deployments</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span>Heroku</span>
+                <span>•</span>
+                <span>Railway</span>
+                <span>•</span>
+                <span>Render</span>
+                <span>•</span>
+                <span>Fly.io</span>
+                <span>•</span>
+                <span>Docker</span>
+                <span>•</span>
+                <span>Systemd & Nginx</span>
+                <span>•</span>
+                <span>Cloudflare Tunnel</span>
+                <span>•</span>
+                <span>Tailscale</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

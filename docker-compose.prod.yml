@@ -1,0 +1,81 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deployment_workshop_web_prod
+    restart: always
+    expose:
+      - "5000"
+    environment:
+      - PORT=5000
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=${MYSQL_USER:-workshop_user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-workshop_secret_pass}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-deployment_workshop}
+      - SECRET_KEY=${SECRET_KEY:-change-in-production-env}
+      - APP_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal_net
+
+  db:
+    image: mysql:8.0
+    container_name: deployment_workshop_db_prod
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-workshop_root_pass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-deployment_workshop}
+      MYSQL_USER: ${MYSQL_USER:-workshop_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-workshop_secret_pass}
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-workshop_root_pass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - internal_net
+
+  nginx:
+    image: nginx:alpine
+    container_name: deployment_workshop_nginx_prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx/docker_nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/lib/letsencrypt
+      - certbot_challenge:/var/www/certbot
+    depends_on:
+      - web
+    networks:
+      - internal_net
+
+  certbot:
+    image: certbot/certbot
+    container_name: deployment_workshop_certbot
+    restart: unless-stopped
+    volumes:
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/lib/letsencrypt
+      - certbot_challenge:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+volumes:
+  mysql_prod_data:
+  certbot_etc:
+  certbot_var:
+  certbot_challenge:
+
+networks:
+  internal_net:
+    driver: bridge

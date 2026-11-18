@@ -1,0 +1,9 @@
+# Configuration for Nixpacks (Railway, Coolify, Zeabur)
+[phases.setup]
+nixPkgs = ["python311", "gcc"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
+
+[start]
+cmd = "gunicorn --workers 2 --threads 4 --timeout 60 --bind 0.0.0.0:${PORT:-5000} wsgi:app"
