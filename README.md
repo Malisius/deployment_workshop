@@ -40,9 +40,10 @@ A production-ready demonstration web application illustrating how to build and d
   - [Direct Exposure (Port Forwarding & DDNS)](#1-direct-exposure-port-forwarding--ddns)
   - [Non-Direct 1: Cloudflare Tunnel (Zero Trust / CGNAT Bypass)](#2-non-direct-1-cloudflare-tunnel-zero-trust--cgnat-bypass)
   - [Non-Direct 2: Cloudflare Proxy (Orange Cloud) + Nginx](#3-non-direct-2-cloudflare-proxy-orange-cloud--nginx)
-  - [Non-Direct 3: Tailscale Funnel (Public Auto-HTTPS)](#4-non-direct-3-tailscale-funnel-public-auto-https)
-  - [Non-Direct 4: Tailscale Serve (Private Mesh Network)](#5-non-direct-4-tailscale-serve-private-mesh-network)
-  - [Non-Direct 5: VPS Reverse SSH Tunnel / WireGuard Gateway](#6-non-direct-5-vps-reverse-ssh-tunnel--wireguard-gateway)
+  - [Non-Direct 3: VPS Ingress Proxy over Tailscale Mesh (Hide Home IP & Bypass Dynamic IPs)](#4-non-direct-3-vps-ingress-proxy-over-tailscale-mesh-hide-home-ip--bypass-dynamic-ips)
+  - [Non-Direct 4: Tailscale Funnel (Public Auto-HTTPS)](#5-non-direct-4-tailscale-funnel-public-auto-https)
+  - [Non-Direct 5: Tailscale Serve (Private Mesh Network)](#6-non-direct-5-tailscale-serve-private-mesh-network)
+  - [Non-Direct 6: VPS Reverse SSH Tunnel / WireGuard Gateway](#7-non-direct-6-vps-reverse-ssh-tunnel--wireguard-gateway)
 - [6. SSL / TLS Certificate Comprehensive Guide](#6-ssl--tls-certificate-comprehensive-guide)
   - [Let's Encrypt with Certbot (HTTP-01 vs DNS-01)](#lets-encrypt-with-certbot-http-01-vs-dns-01)
   - [Caddy & Traefik Automatic ACME](#caddy--traefik-automatic-acme)
@@ -669,14 +670,15 @@ If you prefer **zero certbot configuration**, Caddy handles certificate generati
 
 When self-hosting at home, in an office, or on a private server, you need to expose your application to the public internet. There are two primary routing philosophies:
 
-| Routing Method | Needs Public IP? | Needs Port Forwarding? | Works Behind CGNAT? | DDoS Protected? |
-| :--- | :---: | :---: | :---: | :---: |
-| **Direct Port Forwarding** | Yes | Yes (80, 443) | No | No |
-| **Cloudflare Tunnel** | **No** | **No** | **Yes** | **Yes** |
-| **Cloudflare Proxy + DDNS**| Yes | Yes (80, 443) | No | **Yes** |
-| **Tailscale Funnel** | **No** | **No** | **Yes** | Yes (via Tailscale) |
-| **Tailscale Serve** | **No** | **No** | **Yes** | Private to Tailnet |
-| **Reverse SSH to VPS** | VPS needs IP | No router ports | **Yes** | Depends on VPS |
+| Routing Method | Needs Public IP at Home? | Needs Home Port Forwarding? | Works Behind CGNAT? | Hides Home IP? | Immune to Home Dynamic IP? |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Direct Port Forwarding** | Yes | Yes (80, 443) | No | ❌ No | ❌ Needs DDNS |
+| **Cloudflare Tunnel** | **No** | **No** | **Yes** | ✅ Yes | ✅ Fully immune |
+| **Cloudflare Proxy + DDNS** | Yes | Yes (80, 443) | No | ✅ Yes (Proxied) | ❌ Needs DDNS |
+| **VPS Ingress over Tailscale** | **No (VPS has it)** | **No** | **Yes** | ✅ Yes | ✅ Fully immune (WireGuard roaming) |
+| **Tailscale Funnel** | **No** | **No** | **Yes** | ✅ Yes | ✅ Fully immune |
+| **Tailscale Serve** | **No** | **No** | **Yes** | ✅ Yes | ✅ Fully immune (Private to Mesh) |
+| **Reverse SSH to VPS** | No (VPS has it) | No | **Yes** | ✅ Yes | ⚠️ Depends on SSH keepalive |
 
 ---
 
@@ -808,7 +810,61 @@ If you have a public IP and open ports 80/443, you can place Cloudflare's revers
 
 ---
 
-### 4. Non-Direct 3: Tailscale Funnel (Public Auto-HTTPS)
+### 3. Non-Direct 3: VPS Ingress Proxy over Tailscale Mesh (Hide Home IP & Bypass Dynamic IPs)
+
+> [!TIP]
+> **The Gold Standard for Self-Hosting at Home**: Point your domain at a low-cost VPS ($3.50/mo), terminate SSL on the VPS with Certbot, and reverse proxy traffic through an encrypted Tailscale mesh to your home server. Your home IP is never exposed to the public internet, and home ISP dynamic IP changes never interrupt traffic.
+
+#### Architecture:
+```
+[ Public Web Visitor ]
+         |
+         | (HTTPS: workshop.yourdomain.com -> 203.0.113.50)
+         v
+[ Cloud VPS Gateway ] (Static Public IP: 203.0.113.50)
+  - Public DNS A Record points here
+  - Nginx terminates Let's Encrypt SSL
+  - Tailscale Client IP: 100.64.0.1
+         |
+         | (Encrypted Point-to-Point WireGuard over Tailscale Mesh)
+         | (Automatic NAT Traversal & Endpoint Roaming)
+         v
+[ Home Server ] (Physical hardware / homelab)
+  - ISP Dynamic IP / Behind CGNAT (Completely hidden from public!)
+  - Home Router: ZERO inbound ports opened!
+  - Tailscale Client IP: 100.101.102.103
+  - Flask App: Listening on 127.0.0.1:5000 or 100.101.102.103:5000
+  - MySQL 8.0: Running locally / Docker
+```
+
+#### Why this Solves the Dynamic IP Problem Forever:
+1. **Zero Dynamic DNS (DDNS) Flapping**: When your home ISP changes your public IP address, traditional DDNS requires minutes or hours for DNS caches to catch up, resulting in downtime. Because Tailscale uses WireGuard endpoint roaming, it detects network changes instantly (in milliseconds) and seamlessly maintains the encrypted tunnel without dropping visitor connections.
+2. **Total Origin Anonymity**: Visitors, bots, and Shodan port scanners only see your cloud VPS IP. Your residential home IP address is completely absent from all DNS records.
+3. **No Router Port Forwarding / CGNAT Immune**: Outbound WireGuard UDP hole-punching traverses any residential router, firewall, or Carrier-Grade NAT.
+
+#### Quick Setup:
+1. **Home Server**:
+   - Install Tailscale (`curl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up`).
+   - Run Flask + MySQL (`docker compose up -d`).
+   - Lock down firewall to only accept port 5000 from Tailscale:
+     ```bash
+     sudo ufw allow in on tailscale0 to any port 5000 proto tcp
+     ```
+2. **Cloud VPS**:
+   - Install Nginx, Certbot, and Tailscale (`sudo tailscale up`).
+   - Point your domain's DNS `A` record to the VPS public IP.
+   - Obtain SSL certificate:
+     ```bash
+     sudo certbot certonly --nginx -d workshop.yourdomain.com
+     ```
+   - Deploy `deploy/tailscale/vps_nginx_tailscale_ingress.conf` on the VPS, setting `proxy_pass http://<HOME_SERVER_TAILSCALE_IP>:5000;`.
+   - Reload Nginx (`sudo systemctl reload nginx`).
+
+For the comprehensive step-by-step walkthrough, see `deploy/tailscale/vps-tailscale-gateway-guide.md`.
+
+---
+
+### 4. Non-Direct 4: Tailscale Funnel (Public Auto-HTTPS)
 
 Tailscale Funnel exposes your local application node to the **entire public internet** through Tailscale's global relay network, complete with a valid Let's Encrypt certificate:
 
@@ -827,7 +883,7 @@ sudo tailscale funnel --bg 5000
 
 ---
 
-### 5. Non-Direct 4: Tailscale Serve (Private Mesh Network)
+### 5. Non-Direct 5: Tailscale Serve (Private Mesh Network)
 
 If your application is an internal tool or dashboard and should **never be exposed to the public**:
 
@@ -839,7 +895,7 @@ Only devices authenticated with your Tailscale account can access `https://<node
 
 ---
 
-### 6. Non-Direct 5: VPS Reverse SSH Tunnel / WireGuard Gateway
+### 6. Non-Direct 6: VPS Reverse SSH Tunnel / WireGuard Gateway
 
 If you have a cheap cloud VPS (e.g. \$3.50/mo on Hetzner, DigitalOcean, or Linode) with a public IP, you can use it as a reverse proxy gateway into your home server.
 
@@ -1103,7 +1159,9 @@ deployment_workshop/
 │   ├── cloudflared/
 │   │   └── config.yml                   # Cloudflare Zero Trust Tunnel configuration
 │   ├── tailscale/
-│   │   └── tailscale-serve.md           # Tailscale Serve & Funnel guide
+│   │   ├── vps_nginx_tailscale_ingress.conf  # VPS Nginx reverse proxy into Tailscale mesh
+│   │   ├── vps-tailscale-gateway-guide.md    # Guide: Hide home IP & bypass dynamic IPs
+│   │   └── tailscale-serve.md                # Tailscale Serve & Funnel guide
 │   ├── kubernetes/
 │   │   ├── 01-namespace.yaml
 │   │   ├── 02-mysql-pvc.yaml
