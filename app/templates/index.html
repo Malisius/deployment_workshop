@@ -6,109 +6,159 @@
     <!-- Top Diagnostics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Platform Card -->
-        <div class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
-            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+        <div
+            class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
+            <div
+                class="flex items-center justify-between text-xs text-slate-400 mb-2">
                 <span>DETECTED PLATFORM</span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
                     Auto-Detected
                 </span>
             </div>
             <div class="text-xl font-bold text-white flex items-center gap-2">
-                <svg class="w-6 h-6 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
+                <svg class="w-6 h-6 text-indigo-400 flex-shrink-0" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
                 <span class="truncate">{{ diagnostics.platform }}</span>
             </div>
             <div class="mt-2 text-xs text-slate-400">
-                Environment: <span class="font-mono text-slate-200">{{ diagnostics.app_env }}</span>
+                Environment: <span class="font-mono text-slate-200">{{
+                    diagnostics.app_env }}</span>
             </div>
         </div>
 
         <!-- Database Status Card -->
-        <div class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
-            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+        <div
+            class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
+            <div
+                class="flex items-center justify-between text-xs text-slate-400 mb-2">
                 <span>DATABASE BACKEND</span>
                 {% if db_status.connected %}
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                        Online
-                    </span>
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    Online
+                </span>
                 {% else %}
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
-                        Disconnected
-                    </span>
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    Disconnected
+                </span>
                 {% endif %}
             </div>
             <div class="text-xl font-bold text-white flex items-center gap-2">
-                <svg class="w-6 h-6 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                <svg class="w-6 h-6 text-cyan-400 flex-shrink-0" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
                 </svg>
                 <span class="font-mono uppercase">{{ db_status.dialect }}</span>
-                {% if db_status.connected and db_status.latency_ms is not none %}
-                    <span class="text-xs font-normal text-slate-400">({{ db_status.latency_ms }} ms ping)</span>
+                {% if db_status.connected and db_status.latency_ms is not none
+                %}
+                <span class="text-xs font-normal text-slate-400">({{
+                    db_status.latency_ms }} ms ping)</span>
                 {% endif %}
             </div>
             <div class="mt-2 text-xs text-slate-400">
                 {% if db_status.connected %}
-                    Version: <span class="font-mono text-slate-200 truncate">{{ db_status.version }}</span>
+                Version: <span class="font-mono text-slate-200 truncate">{{
+                    db_status.version }}</span>
                 {% else %}
-                    <span class="text-rose-400 truncate">{{ db_status.error or 'Connection failed' }}</span>
+                <span class="text-rose-400 truncate">{{ db_status.error or
+                    'Connection failed' }}</span>
                 {% endif %}
             </div>
         </div>
 
         <!-- Host Runtime Card -->
-        <div class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
-            <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+        <div
+            class="p-5 rounded-2xl bg-slate-800/60 border border-slate-700/60 backdrop-blur shadow-lg">
+            <div
+                class="flex items-center justify-between text-xs text-slate-400 mb-2">
                 <span>HOST & RUNTIME</span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                <span
+                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                     Port {{ diagnostics.port }}
                 </span>
             </div>
-            <div class="text-xl font-bold text-white flex items-center gap-2 font-mono truncate">
-                <svg class="w-6 h-6 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <div
+                class="text-xl font-bold text-white flex items-center gap-2 font-mono truncate">
+                <svg class="w-6 h-6 text-amber-400 flex-shrink-0" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span class="truncate">{{ diagnostics.hostname }}</span>
             </div>
             <div class="mt-2 text-xs text-slate-400">
-                Python <span class="font-mono text-slate-200">{{ diagnostics.python_version }}</span> on <span class="font-mono text-slate-200">{{ diagnostics.os }}</span>
+                Python <span class="font-mono text-slate-200">{{
+                    diagnostics.python_version }}</span> on <span
+                    class="font-mono text-slate-200">{{ diagnostics.os }}</span>
             </div>
         </div>
     </div>
 
     <!-- Status Notice Banner -->
     {% if db_status.connected %}
-        {% if diagnostics.is_mysql %}
-            <div class="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800/60 flex items-start space-x-3 text-emerald-200">
-                <svg class="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div class="text-sm">
-                    <span class="font-bold text-emerald-300">Connected to MySQL Database:</span>
-                    The application successfully authenticated with the MySQL service. Auto-seeding logic ensures demo records are populated on first launch and persist across container deployments.
-                </div>
-            </div>
-        {% else %}
-            <div class="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60 flex items-start space-x-3 text-amber-200">
-                <svg class="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <div class="text-sm">
-                    <span class="font-bold text-amber-300">Notice: Running in SQLite Fallback Mode.</span>
-                    No MySQL configuration was detected in environment variables (<code class="bg-amber-900/60 px-1 py-0.5 rounded font-mono text-xs">DATABASE_URL</code> or <code class="bg-amber-900/60 px-1 py-0.5 rounded font-mono text-xs">MYSQL_HOST</code>). Provide MySQL credentials to connect to a live database.
-                </div>
-            </div>
-        {% endif %}
-    {% else %}
-        <div class="p-4 rounded-2xl bg-rose-950/40 border border-rose-800/60 flex items-start space-x-3 text-rose-200">
-            <svg class="w-6 h-6 text-rose-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div class="text-sm">
-                <span class="font-bold text-rose-300">Database Connection Failed:</span>
-                Could not connect to the database. If deploying with Docker Compose or Kubernetes, the database container may still be initializing. Error: <span class="font-mono text-xs">{{ db_status.error }}</span>
-            </div>
+    {% if diagnostics.is_mysql %}
+    <div
+        class="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800/60 flex items-start space-x-3 text-emerald-200">
+        <svg class="w-6 h-6 text-emerald-400 flex-shrink-0 mt-0.5" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="text-sm">
+            <span class="font-bold text-emerald-300">Connected to MySQL
+                Database:</span>
+            The application successfully authenticated with the MySQL service.
+            Auto-seeding logic ensures demo records are populated on first
+            launch and persist across container deployments.
         </div>
+    </div>
+    {% else %}
+    <div
+        class="p-4 rounded-2xl bg-amber-950/40 border border-amber-800/60 flex items-start space-x-3 text-amber-200">
+        <svg class="w-6 h-6 text-amber-400 flex-shrink-0 mt-0.5" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="text-sm">
+            <span class="font-bold text-amber-300">Notice: Running in SQLite
+                Fallback Mode.</span>
+            No MySQL configuration was detected in environment variables (<code
+                class="bg-amber-900/60 px-1 py-0.5 rounded font-mono text-xs">DATABASE_URL</code>
+            or <code
+                class="bg-amber-900/60 px-1 py-0.5 rounded font-mono text-xs">MYSQL_HOST</code>).
+            Provide MySQL credentials to connect to a live database.
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div
+        class="p-4 rounded-2xl bg-rose-950/40 border border-rose-800/60 flex items-start space-x-3 text-rose-200">
+        <svg class="w-6 h-6 text-rose-400 flex-shrink-0 mt-0.5" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+        <div class="text-sm">
+            <span class="font-bold text-rose-300">Database Connection
+                Failed:</span>
+            Could not connect to the database. If deploying with Docker Compose
+            or Kubernetes, the database container may still be initializing.
+            Error: <span class="font-mono text-xs">{{ db_status.error }}</span>
+        </div>
+    </div>
     {% endif %}
 
     <!-- Main Grid: Items List + Forms -->
@@ -118,15 +168,22 @@
         <div class="lg:col-span-2 space-y-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <h2 class="text-xl font-bold text-white">Database Records</h2>
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-900/80 text-indigo-300 border border-indigo-700/50">
+                    <h2 class="text-xl font-bold text-white">Database
+                        Records</h2>
+                    <span
+                        class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-900/80 text-indigo-300 border border-indigo-700/50">
                         {{ item_count }} records
                     </span>
                 </div>
-                <form action="{{ url_for('main.seed_now') }}" method="POST" class="inline">
-                    <button type="submit" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center space-x-1.5">
-                        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                <form action="{{ url_for('main.seed_now') }}" method="POST"
+                    class="inline">
+                    <button type="submit"
+                        class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition flex items-center space-x-1.5">
+                        <svg class="w-3.5 h-3.5 text-indigo-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                         <span>Re-Seed Sample Data</span>
                     </button>
@@ -134,29 +191,37 @@
             </div>
 
             {% if items %}
-                <div class="space-y-3">
-                    {% for item in items %}
-                        <div class="p-5 rounded-2xl bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 transition shadow-md">
-                            <div class="flex items-center justify-between mb-2">
-                                <span class="px-2 py-0.5 rounded-md text-xs font-medium 
+            <div class="space-y-3">
+                {% for item in items %}
+                <div
+                    class="p-5 rounded-2xl bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 transition shadow-md">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="px-2 py-0.5 rounded-md text-xs font-medium 
                                     {% if item.category == 'Cloud PaaS' %}bg-sky-900/60 text-sky-300 border border-sky-700/40
                                     {% elif item.category == 'Containers' %}bg-indigo-900/60 text-indigo-300 border border-indigo-700/40
                                     {% elif item.category == 'Self-Hosted' %}bg-emerald-900/60 text-emerald-300 border border-emerald-700/40
                                     {% elif item.category == 'Networking' %}bg-amber-900/60 text-amber-300 border border-amber-700/40
                                     {% else %}bg-slate-700/60 text-slate-300 border border-slate-600/40{% endif %}">
-                                    {{ item.category }}
-                                </span>
-                                <span class="text-xs font-mono text-slate-400">{{ item.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') if item.created_at else '' }}</span>
-                            </div>
-                            <h3 class="text-base font-semibold text-white mb-1">{{ item.title }}</h3>
-                            <p class="text-sm text-slate-300 leading-relaxed">{{ item.description }}</p>
-                        </div>
-                    {% endfor %}
+                            {{ item.category }}
+                        </span>
+                        <span class="text-xs font-mono text-slate-400">{{
+                            item.created_at.strftime('%Y-%m-%d %H:%M:%S UTC') if
+                            item.created_at else '' }}</span>
+                    </div>
+                    <h3 class="text-base font-semibold text-white mb-1">{{
+                        item.title }}</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed">{{
+                        item.description }}</p>
                 </div>
+                {% endfor %}
+            </div>
             {% else %}
-                <div class="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/40 text-center">
-                    <p class="text-sm text-slate-400">No records found. Click "Re-Seed Sample Data" or use the form to insert a record.</p>
-                </div>
+            <div
+                class="p-8 rounded-2xl bg-slate-800/30 border border-slate-700/40 text-center">
+                <p class="text-sm text-slate-400">No records found. Click
+                    "Re-Seed Sample Data" or use the form to insert a
+                    record.</p>
+            </div>
             {% endif %}
         </div>
 
@@ -164,89 +229,141 @@
         <div class="space-y-6">
 
             <!-- Add Item Form -->
-            <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60 backdrop-blur shadow-lg">
-                <h3 class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
-                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div
+                class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60 backdrop-blur shadow-lg">
+                <h3
+                    class="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+                    <svg class="w-5 h-5 text-indigo-400" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M12 9v3m0 0v3m0-3h3m-3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span>Insert New Record</span>
                 </h3>
-                <form action="{{ url_for('main.add_item') }}" method="POST" class="space-y-4">
+                <form action="{{ url_for('main.add_item') }}" method="POST"
+                    class="space-y-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1" for="title">Title *</label>
-                        <input type="text" id="title" name="title" required placeholder="e.g. My Custom Deployment" 
-                               class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <label
+                            class="block text-xs font-semibold text-slate-300 mb-1"
+                            for="title">Title *</label>
+                        <input type="text" id="title" name="title" required
+                            placeholder="e.g. My Custom Deployment"
+                            class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1" for="category">Category</label>
-                        <select id="category" name="category" 
-                                class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                            <option value="Cloud PaaS">Cloud PaaS (Heroku, Render, Railway)</option>
-                            <option value="Containers">Containers (Docker, Fly.io, Northflank)</option>
-                            <option value="Self-Hosted">Self-Hosted (Systemd, Nginx, Caddy)</option>
-                            <option value="Networking">Networking (Cloudflare Tunnel, Tailscale)</option>
-                            <option value="Database">Database Operations</option>
-                            <option value="General" selected>General Note</option>
+                        <label
+                            class="block text-xs font-semibold text-slate-300 mb-1"
+                            for="category">Category</label>
+                        <select id="category" name="category"
+                            class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            <option value="Cloud PaaS">Cloud PaaS (Heroku,
+                                Render, Railway)</option>
+                            <option value="Containers">Containers (Docker,
+                                Fly.io, Northflank)</option>
+                            <option value="Self-Hosted">Self-Hosted (Systemd,
+                                Nginx, Caddy)</option>
+                            <option value="Networking">Networking (Cloudflare
+                                Tunnel, Tailscale)</option>
+                            <option value="Database">Database
+                                Operations</option>
+                            <option value="General" selected>General
+                                Note</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1" for="description">Description</label>
-                        <textarea id="description" name="description" rows="3" placeholder="Enter notes or verification details..." 
-                                  class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+                        <label
+                            class="block text-xs font-semibold text-slate-300 mb-1"
+                            for="description">Description</label>
+                        <textarea id="description" name="description" rows="3"
+                            placeholder="Enter notes or verification details..."
+                            class="w-full px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
                     </div>
-                    <button type="submit" 
-                            class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    <button type="submit"
+                        class="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        <span>Save to MySQL</span>
+                        <span>Save to database</span>
                     </button>
                 </form>
             </div>
 
             <!-- Zero-Change Target Platforms Matrix -->
-            <div class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60 backdrop-blur shadow-lg">
-                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Pre-Configured Targets</h3>
+            <div
+                class="p-6 rounded-2xl bg-slate-800/50 border border-slate-700/60 backdrop-blur shadow-lg">
+                <h3
+                    class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">Pre-Configured
+                    Targets</h3>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
                         <span class="font-semibold text-slate-200">Heroku</span>
-                        <p class="text-slate-400 font-mono text-[11px]">Procfile + runtime.txt</p>
+                        <p class="text-slate-400 font-mono text-[11px]">Procfile
+                            + runtime.txt</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Railway</span>
-                        <p class="text-slate-400 font-mono text-[11px]">railway.json</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span
+                            class="font-semibold text-slate-200">Railway</span>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">railway.json</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
                         <span class="font-semibold text-slate-200">Render</span>
-                        <p class="text-slate-400 font-mono text-[11px]">render.yaml</p>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">render.yaml</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
                         <span class="font-semibold text-slate-200">Fly.io</span>
-                        <p class="text-slate-400 font-mono text-[11px]">fly.toml</p>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">fly.toml</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Northflank</span>
-                        <p class="text-slate-400 font-mono text-[11px]">Dockerfile / Addon</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span
+                            class="font-semibold text-slate-200">Northflank</span>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">Dockerfile
+                            / Addon</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
                         <span class="font-semibold text-slate-200">Vercel</span>
-                        <p class="text-slate-400 font-mono text-[11px]">vercel.json</p>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">vercel.json</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Systemd VPS</span>
-                        <p class="text-slate-400 font-mono text-[11px]">.service unit</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span class="font-semibold text-slate-200">Systemd
+                            VPS</span>
+                        <p class="text-slate-400 font-mono text-[11px]">.service
+                            unit</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Docker Compose</span>
-                        <p class="text-slate-400 font-mono text-[11px]">docker-compose.yml</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span class="font-semibold text-slate-200">Docker
+                            Compose</span>
+                        <p
+                            class="text-slate-400 font-mono text-[11px]">docker-compose.yml</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Cloudflare Tunnel</span>
-                        <p class="text-slate-400 font-mono text-[11px]">Zero Trust tunnel</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span class="font-semibold text-slate-200">Cloudflare
+                            Tunnel</span>
+                        <p class="text-slate-400 font-mono text-[11px]">Zero
+                            Trust tunnel</p>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
-                        <span class="font-semibold text-slate-200">Tailscale Funnel</span>
-                        <p class="text-slate-400 font-mono text-[11px]">Mesh HTTPS Ingress</p>
+                    <div
+                        class="p-2.5 rounded-lg bg-slate-900/50 border border-slate-700/40">
+                        <span class="font-semibold text-slate-200">Tailscale
+                            Funnel</span>
+                        <p class="text-slate-400 font-mono text-[11px]">Mesh
+                            HTTPS Ingress</p>
                     </div>
                 </div>
             </div>
